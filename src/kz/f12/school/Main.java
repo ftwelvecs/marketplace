@@ -3,6 +3,7 @@ package kz.f12.school;
 import kz.f12.school.dto.ProductDTO;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Main {
@@ -32,10 +33,10 @@ public class Main {
 
             switch (command) {
                 case GET_ALL:   getAll();   break;
-                case SEARCH:    search();   break;
+                case SEARCH:    search(sc); break;
                 case ADD:       add(sc);    break;
-                case EDIT:      edit();     break;
-                case DELETE:    delete();   break;
+                case EDIT:      edit(sc);   break;
+                case DELETE:    delete(sc); break;
                 // останавливаем главный цикл по его метке
                 case EXIT:      /* nope */  break MAIN_LOOP;
                 default:
@@ -78,14 +79,29 @@ public class Main {
         System.out.println();
     }
 
-    // TODO: Реализовать логику метода поиска
     // Поиск будет происходить по имени продукта,
     // т.е. искать по первому вхождению имени.
     // Если в списке хранятся продукты: книга, телефон, телевизор,
     // то при введении слово "теле" должны находиться продукты: телефон и телевизор.
     // А если нету совпадения, выводить сообщение: "Продукт не найден"
-    public static void search() {
-        System.out.println("search() method was called");
+    public static void search(Scanner sc) {
+        System.out.print("\tВведите название продукта: ");
+        String name = sc.nextLine().toLowerCase();
+        boolean notFound = true;
+        for (ProductDTO product : productList) {
+            if (product.getName().toLowerCase().startsWith(name)) {
+                notFound = false;
+                System.out.println("\t Продукт: " + product.getName());
+                System.out.println("\t Описание: " + product.getDescription());
+                System.out.println("\t Цена: " + product.getPrice());
+                System.out.println("\t Кол-во: " + product.getQuantity());
+                System.out.println("\t Вес: " + product.getWeight());
+                System.out.println();
+            }
+        }
+        if (notFound) {
+            System.out.println("Продукт не найден");
+        }
     }
 
     // чтобы не создавать каждый раз объект Scanner
@@ -125,11 +141,68 @@ public class Main {
         System.out.println();
     }
 
-    public static void edit() {
-        System.out.println("edit() method was called");
+    // 1. Запросить у пользователя имя продукта, который мы хотим переименовать
+    // 2. Ищем, если находим то где-то сохраняем, а если нет, выводить сообщение: Продукт не найден
+    // 3. Если найден продукт, то запрашиваем новые параметры (имя, описания и т.д.) и сохраняем
+    public static void edit(Scanner sc) {
+        System.out.print("\tВведите название продукта: ");
+        String searchedName = sc.nextLine();
+        boolean notFound = true;
+        for (ProductDTO product : productList) {
+            if (product.getName().equalsIgnoreCase(searchedName)) {
+                notFound = false;
+                System.out.print("\tВведите новое название продукта: ");
+                String name = sc.nextLine();
+
+                System.out.print("\tВведите новое описание: ");
+                String desc = sc.nextLine();
+
+                System.out.print("\tВведите новое кол-во: ");
+                int qty = Integer.parseInt(sc.nextLine());
+
+                System.out.print("\tВведите новую цену: ");
+                double price = Double.parseDouble(sc.nextLine());
+
+                System.out.print("\tВведите новый вес продукта: ");
+                double weight = Double.parseDouble(sc.nextLine());
+
+                product.setName(name);
+                product.setDescription(desc);
+                product.setQuantity(qty);
+                product.setPrice(price);
+                product.setWeight(weight);
+                break;
+            }
+        }
+        if (notFound) {
+            System.out.println("Продукт не найден");
+        }
     }
 
-    public static void delete() {
-        System.out.println("delete() method was called");
+    public static void delete(Scanner sc) {
+        System.out.print("\tВведите название продукта: ");
+        String name = sc.nextLine().toLowerCase();
+        boolean notFound = true;
+//        Удаляем через итератор
+//        Iterator<ProductDTO> iterator = productList.iterator();
+//        while (iterator.hasNext()) {
+//            ProductDTO product = iterator.next();
+//            if (product.getName().equalsIgnoreCase(name)) {
+//                notFound = false;
+//                iterator.remove();
+//                break;
+//            }
+//        }
+
+        for (ProductDTO product : productList) {
+            if (product.getName().equalsIgnoreCase(name)) {
+                notFound = false;
+                productList.remove(product);
+                break;
+            }
+        }
+        if (notFound) {
+            System.out.println("Продукт не найден");
+        }
     }
 }

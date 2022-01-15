@@ -3,7 +3,6 @@ package kz.f12.school;
 import kz.f12.school.dto.ProductDTO;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Scanner;
 
 public class Main {

@@ -1,7 +1,12 @@
 package kz.f12.school;
 
 import kz.f12.school.dto.ProductDTO;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -19,6 +24,27 @@ public class Main {
     private static ArrayList<ProductDTO> productList = new ArrayList<>();
 
     public static void main(String[] args) {
+        init();
+        run();
+    }
+
+    public static void init() {
+        JSONArray jsonArray = getJson("/products.json");
+        for (Object object : jsonArray) {
+            JSONObject jsonObject = (JSONObject) object;
+
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setName(jsonObject.getString("name"));
+            productDTO.setPrice(jsonObject.getDouble("price"));
+            productDTO.setQuantity(jsonObject.getInt("quantity"));
+            productDTO.setWeight(jsonObject.getDouble("weight"));
+            productDTO.setDescription("unknown");
+
+            productList.add(productDTO);
+        }
+    }
+
+    public static void run() {
         printGreetings();
 
         // именуем меткой бесконечный цикл
@@ -44,6 +70,23 @@ public class Main {
             // чтобы разделить абзацы
             System.out.println();
         }
+    }
+
+    public static JSONArray getJson(String resourceName) {
+        InputStreamReader inputStreamReader =
+                new InputStreamReader(Main.class.getResourceAsStream(resourceName));
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        String line;
+        String stringJson = "";
+
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+                stringJson += line;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new JSONArray(stringJson);
     }
 
     public static void printGreetings() {

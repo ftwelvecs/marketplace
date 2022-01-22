@@ -1,13 +1,13 @@
 package kz.f12.school;
 
-import kz.f12.school.dto.ProductDTO;
+import kz.f12.school.model.dto.ProductDTO;
+import kz.f12.school.service.ProductService;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -18,10 +18,13 @@ public class Main {
     private final static int ADD = 3;
     private final static int EDIT = 4;
     private final static int DELETE = 5;
-    private final static int EXIT = 6;
+    private final static int SAVE = 6;
+    private final static int EXIT = 7;
 
     // список продуктов
-    private static ArrayList<ProductDTO> productList = new ArrayList<>();
+    private static List<ProductDTO> productList = new ArrayList<>();
+
+    private static ProductService productService = new ProductService();
 
     public static void main(String[] args) {
         init();
@@ -29,19 +32,7 @@ public class Main {
     }
 
     public static void init() {
-        JSONArray jsonArray = getJson("/products.json");
-        for (Object object : jsonArray) {
-            JSONObject jsonObject = (JSONObject) object;
-
-            ProductDTO productDTO = new ProductDTO();
-            productDTO.setName(jsonObject.getString("name"));
-            productDTO.setPrice(jsonObject.getDouble("price"));
-            productDTO.setQuantity(jsonObject.getInt("quantity"));
-            productDTO.setWeight(jsonObject.getDouble("weight"));
-            productDTO.setDescription("unknown");
-
-            productList.add(productDTO);
-        }
+        productList = productService.getAll();
     }
 
     public static void run() {
@@ -62,6 +53,7 @@ public class Main {
                 case ADD:       add(sc);    break;
                 case EDIT:      edit(sc);   break;
                 case DELETE:    delete(sc); break;
+                case SAVE:      save();     break;
                 // останавливаем главный цикл по его метке
                 case EXIT:      /* nope */  break MAIN_LOOP;
                 default:
@@ -73,20 +65,8 @@ public class Main {
     }
 
     public static JSONArray getJson(String resourceName) {
-        InputStreamReader inputStreamReader =
-                new InputStreamReader(Main.class.getResourceAsStream(resourceName));
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        String line;
-        String stringJson = "";
-
-        try {
-            while ((line = bufferedReader.readLine()) != null) {
-                stringJson += line;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new JSONArray(stringJson);
+        JSONTokener jsonTokener = new JSONTokener(Main.class.getResourceAsStream(resourceName));
+        return (JSONArray) jsonTokener.nextValue();
     }
 
     public static void printGreetings() {
@@ -101,7 +81,8 @@ public class Main {
         System.out.println("\tНажмите 3 чтобы добавить продукт;");
         System.out.println("\tНажмите 4 чтобы редактировать продукт;");
         System.out.println("\tНажмите 5 чтобы удалить продукт;");
-        System.out.println("\tНажмите 6 чтобы выйти из программы.");
+        System.out.println("\tНажмите 6 чтобы сохранить в базу список продуктов;");
+        System.out.println("\tНажмите 7 чтобы выйти из программы.");
         System.out.print("Ввод: ");
     }
 
@@ -143,6 +124,12 @@ public class Main {
         }
         if (notFound) {
             System.out.println("Продукт не найден");
+        }
+    }
+
+    public static void save() {
+        for (ProductDTO productDTO : productList) {
+            productService.save(productDTO);
         }
     }
 

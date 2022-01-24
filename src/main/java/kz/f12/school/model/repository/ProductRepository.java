@@ -1,6 +1,7 @@
 package kz.f12.school.model.repository;
 
 import kz.f12.school.model.dto.ProductDTO;
+import kz.f12.school.util.Mapper;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -40,6 +41,35 @@ public class ProductRepository {
             preparedStatement.setDouble(5, productDTO.getWeight());
             // 4. выполнения запроса
             preparedStatement.execute();
+            preparedStatement.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void update(ProductDTO productDTO) {
+        Connection connection = getConnection();
+        try {
+            String sql = "update main.products set name = ?, description = ?, quantity = ?, price = ?, weight = ? where id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, productDTO.getName());
+            preparedStatement.setString(2, productDTO.getDescription());
+            preparedStatement.setInt(3, productDTO.getQuantity());
+            preparedStatement.setDouble(4, productDTO.getPrice());
+            preparedStatement.setDouble(5, productDTO.getWeight());
+            preparedStatement.setInt(6, productDTO.getId());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public void delete(int productId) {
+        String sql = "delete from main.products where id = ?";
+        try (PreparedStatement preparedStatement = getConnection().prepareStatement(sql)) {
+            preparedStatement.setInt(1, productId);
+            preparedStatement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -48,28 +78,12 @@ public class ProductRepository {
     public List<ProductDTO> getAll() {
         List<ProductDTO> list = new ArrayList<>();
         Connection connection = getConnection();
-        try {
-            Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("select * from main.products");
             // пока есть запись в таблице
             while (resultSet.next()) {
-                // берем данные из таблицы
-                String name = resultSet.getString("name");
-                String description = resultSet.getString("description");
-                int quantity = resultSet.getInt("quantity");
-                double price = resultSet.getDouble("price");
-                double weight = resultSet.getDouble("weight");
-
-                // создаем объект продукта и передаем туда значения
-                ProductDTO productDTO = new ProductDTO();
-                productDTO.setName(name);
-                productDTO.setDescription(description);
-                productDTO.setQuantity(quantity);
-                productDTO.setPrice(price);
-                productDTO.setWeight(weight);
-
                 // заполняем список результата
-                list.add(productDTO);
+                list.add(Mapper.toProductDTO(resultSet));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

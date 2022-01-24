@@ -13,6 +13,14 @@ public class ProductService {
         productRepository.save(productDTO);
     }
 
+    public void update(ProductDTO productDTO) {
+        productRepository.update(productDTO);
+    }
+
+    public void delete(int productId) {
+        productRepository.delete(productId);
+    }
+
     public List<ProductDTO> getAll() {
         return productRepository.getAll();
     }

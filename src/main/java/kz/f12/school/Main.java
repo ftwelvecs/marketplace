@@ -3,7 +3,6 @@ package kz.f12.school;
 import kz.f12.school.model.dto.ProductDTO;
 import kz.f12.school.service.ProductService;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
@@ -18,8 +17,7 @@ public class Main {
     private final static int ADD = 3;
     private final static int EDIT = 4;
     private final static int DELETE = 5;
-    private final static int SAVE = 6;
-    private final static int EXIT = 7;
+    private final static int EXIT = 6;
 
     // список продуктов
     private static List<ProductDTO> productList = new ArrayList<>();
@@ -53,7 +51,6 @@ public class Main {
                 case ADD:       add(sc);    break;
                 case EDIT:      edit(sc);   break;
                 case DELETE:    delete(sc); break;
-                case SAVE:      save();     break;
                 // останавливаем главный цикл по его метке
                 case EXIT:      /* nope */  break MAIN_LOOP;
                 default:
@@ -81,8 +78,7 @@ public class Main {
         System.out.println("\tНажмите 3 чтобы добавить продукт;");
         System.out.println("\tНажмите 4 чтобы редактировать продукт;");
         System.out.println("\tНажмите 5 чтобы удалить продукт;");
-        System.out.println("\tНажмите 6 чтобы сохранить в базу список продуктов;");
-        System.out.println("\tНажмите 7 чтобы выйти из программы.");
+        System.out.println("\tНажмите 6 чтобы выйти из программы.");
         System.out.print("Ввод: ");
     }
 
@@ -127,12 +123,6 @@ public class Main {
         }
     }
 
-    public static void save() {
-        for (ProductDTO productDTO : productList) {
-            productService.save(productDTO);
-        }
-    }
-
     // чтобы не создавать каждый раз объект Scanner
     // передаем его в метод как параметр
     public static void add(Scanner sc) {
@@ -162,6 +152,8 @@ public class Main {
         product.setQuantity(qty);
         product.setPrice(price);
         product.setWeight(weight);
+
+        productService.save(product);
 
         // включаем в общий список продуктов
         productList.add(product);
@@ -200,6 +192,7 @@ public class Main {
                 product.setQuantity(qty);
                 product.setPrice(price);
                 product.setWeight(weight);
+                productService.update(product);
                 break;
             }
         }
@@ -212,20 +205,11 @@ public class Main {
         System.out.print("\tВведите название продукта: ");
         String name = sc.nextLine().toLowerCase();
         boolean notFound = true;
-//        Удаляем через итератор
-//        Iterator<ProductDTO> iterator = productList.iterator();
-//        while (iterator.hasNext()) {
-//            ProductDTO product = iterator.next();
-//            if (product.getName().equalsIgnoreCase(name)) {
-//                notFound = false;
-//                iterator.remove();
-//                break;
-//            }
-//        }
 
         for (ProductDTO product : productList) {
             if (product.getName().equalsIgnoreCase(name)) {
                 notFound = false;
+                productService.delete(product.getId());
                 productList.remove(product);
                 break;
             }

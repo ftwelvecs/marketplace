@@ -7,24 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductRepository {
-
-    private static final String url = "jdbc:postgresql://localhost:5432/marketplace";
-    private static final String login = "postgres";
-    private static final String password = "postgres";
-
-    private Connection connection;
-
-    private Connection getConnection() {
-        if (connection == null) {
-            try {
-                connection = DriverManager.getConnection(url, login, password);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return connection;
-    }
+public class ProductRepository extends AbstractRepository {
 
     public void save(ProductDTO productDTO) {
         // 1. получаем подключение
@@ -89,6 +72,19 @@ public class ProductRepository {
             throwables.printStackTrace();
         }
         return list;
+    }
+
+    public ProductDTO getById(int productId) {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection.prepareStatement("select * from main.products where id = ?")) {
+            statement.setInt(1, productId);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return Mapper.toProductDTO(resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return new ProductDTO();
     }
 
 }

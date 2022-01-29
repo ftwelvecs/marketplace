@@ -7,6 +7,7 @@ public class ProductDTO {
     private int quantity;
     private double price;
     private double weight;
+    private CategoryDTO categoryDTO;
 
     public int getId() {
         return id;
@@ -54,5 +55,13 @@ public class ProductDTO {
 
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    public CategoryDTO getCategoryDTO() {
+        return categoryDTO;
+    }
+
+    public void setCategoryDTO(CategoryDTO categoryDTO) {
+        this.categoryDTO = categoryDTO;
     }
 }

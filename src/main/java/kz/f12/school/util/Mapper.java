@@ -1,5 +1,6 @@
 package kz.f12.school.util;
 
+import kz.f12.school.model.dto.CategoryDTO;
 import kz.f12.school.model.dto.ProductDTO;
 
 import java.sql.ResultSet;
@@ -31,5 +32,26 @@ public class Mapper {
         }
         return productDTO;
     }
+
+    public static CategoryDTO toCategoryDTO(ResultSet resultSet) {
+        // создаем объект продукта
+        // shift + f6 <- быстро поменять все именования переменной
+        CategoryDTO categoryDTO = new CategoryDTO();
+        try {
+            // берем данные из таблицы
+            int id = resultSet.getInt("id");
+            String name = resultSet.getString("name");
+            String description = resultSet.getString("description");
+
+            // передаем значения
+            categoryDTO.setId(id);
+            categoryDTO.setName(name);
+            categoryDTO.setDescription(description);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categoryDTO;
+    }
+
 
 }

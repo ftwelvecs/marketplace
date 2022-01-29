@@ -1,6 +1,8 @@
 package kz.f12.school;
 
+import kz.f12.school.model.dto.CategoryDTO;
 import kz.f12.school.model.dto.ProductDTO;
+import kz.f12.school.service.CategoryService;
 import kz.f12.school.service.ProductService;
 import org.json.JSONArray;
 import org.json.JSONTokener;
@@ -21,8 +23,11 @@ public class Main {
 
     // список продуктов
     private static List<ProductDTO> productList = new ArrayList<>();
+    private static List<CategoryDTO> categoryList = new ArrayList<>();
+
 
     private static ProductService productService = new ProductService();
+    private static CategoryService categoryService = new CategoryService();
 
     public static void main(String[] args) {
         init();
@@ -31,6 +36,7 @@ public class Main {
 
     public static void init() {
         productList = productService.getAll();
+        categoryList = categoryService.getAll();
     }
 
     public static void run() {
@@ -142,6 +148,10 @@ public class Main {
 
         System.out.print("\tВведите вес продукта: ");
         double weight = Double.parseDouble(sc.nextLine());
+
+        for (int i = 0; i < categoryList.size(); i++) {
+            System.out.println((i + 1) + ") " + categoryList.get(i).getName());
+        }
 
         // за счет сохраненных данных
         // создаем объект продукта

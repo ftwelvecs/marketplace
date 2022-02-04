@@ -9,19 +9,28 @@ import java.util.List;
 
 public class ProductRepository extends AbstractRepository {
 
+    private static final ProductRepository INSTANCE = new ProductRepository();
+
+    private ProductRepository() {}
+
+    public static ProductRepository getInstance() {
+        return INSTANCE;
+    }
+
     public void save(ProductDTO productDTO) {
         // 1. получаем подключение
         Connection connection = getConnection();
         try {
             // 2. подготовливаем запрос
             PreparedStatement preparedStatement = connection
-                    .prepareStatement("insert into main.products(name, description, quantity, price, weight) values(?,?,?,?,?)");
+                    .prepareStatement("insert into main.products(name, description, quantity, price, weight, category_id) values(?,?,?,?,?,?)");
             // 3. передача параметров
             preparedStatement.setString(1, productDTO.getName());
             preparedStatement.setString(2, productDTO.getDescription());
             preparedStatement.setInt(3, productDTO.getQuantity());
             preparedStatement.setDouble(4, productDTO.getPrice());
             preparedStatement.setDouble(5, productDTO.getWeight());
+            preparedStatement.setDouble(6, productDTO.getCategoryDTO().getId());
             // 4. выполнения запроса
             preparedStatement.execute();
             preparedStatement.close();

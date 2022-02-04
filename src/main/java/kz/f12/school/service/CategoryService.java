@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CategoryService {
 
-    private CategoryRepository categoryRepository = new CategoryRepository();
+    private CategoryRepository categoryRepository = CategoryRepository.getInstance();
 
     public void save(CategoryDTO categoryDTO) {
         categoryRepository.save(categoryDTO);

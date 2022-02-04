@@ -9,6 +9,15 @@ import java.util.List;
 
 public class CategoryRepository extends AbstractRepository {
 
+    private static final CategoryRepository INSTANCE = new CategoryRepository();
+
+    private CategoryRepository() {
+    }
+
+    public static CategoryRepository getInstance() {
+        return INSTANCE;
+    }
+
     public void save(CategoryDTO categoryDTO) {
         // 1. получаем подключение
         Connection connection = getConnection();
@@ -66,5 +75,18 @@ public class CategoryRepository extends AbstractRepository {
             throwables.printStackTrace();
         }
         return list;
+    }
+
+    public CategoryDTO getById(int categoryId) {
+        Connection connection = getConnection();
+        try (PreparedStatement statement = connection.prepareStatement("select * from main.category where id = ?")) {
+            statement.setInt(1, categoryId);
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            return Mapper.toCategoryDTO(resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return new CategoryDTO();
     }
 }

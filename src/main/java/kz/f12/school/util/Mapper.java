@@ -2,11 +2,14 @@ package kz.f12.school.util;
 
 import kz.f12.school.model.dto.CategoryDTO;
 import kz.f12.school.model.dto.ProductDTO;
+import kz.f12.school.model.repository.CategoryRepository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Mapper {
+
+    private static CategoryRepository categoryRepository = CategoryRepository.getInstance();
 
     public static ProductDTO toProductDTO(ResultSet resultSet) {
         // создаем объект продукта
@@ -19,6 +22,7 @@ public class Mapper {
             int quantity = resultSet.getInt("quantity");
             double price = resultSet.getDouble("price");
             double weight = resultSet.getDouble("weight");
+            CategoryDTO categoryDTO = categoryRepository.getById(resultSet.getInt("category_id"));
 
             // передаем значения
             productDTO.setId(id);
@@ -27,6 +31,7 @@ public class Mapper {
             productDTO.setQuantity(quantity);
             productDTO.setPrice(price);
             productDTO.setWeight(weight);
+            productDTO.setCategoryDTO(categoryDTO);
         } catch (SQLException e) {
             e.printStackTrace();
         }

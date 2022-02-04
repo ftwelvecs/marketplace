@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ProductService {
 
-    private ProductRepository productRepository = new ProductRepository();
+    private ProductRepository productRepository = ProductRepository.getInstance();
 
     public void save(ProductDTO productDTO) {
         productRepository.save(productDTO);

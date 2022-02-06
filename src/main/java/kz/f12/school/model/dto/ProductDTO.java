@@ -1,19 +1,19 @@
 package kz.f12.school.model.dto;
 
 public class ProductDTO {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
-    private int quantity;
-    private double price;
-    private double weight;
+    private Integer quantity;
+    private Double price;
+    private Double weight;
     private CategoryDTO categoryDTO;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -33,27 +33,27 @@ public class ProductDTO {
         this.description = description;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 

@@ -25,4 +25,7 @@ public class ProductService {
         return productRepository.getAll();
     }
 
+    public ProductDTO getById(int id) {
+        return productRepository.getById(id);
+    }
 }

@@ -1,6 +1,10 @@
 package kz.f12.school.util;
 
+import org.json.JSONObject;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -16,5 +20,17 @@ public class ServletUtils {
         PrintWriter writer = resp.getWriter();
         writer.write(content);
         writer.flush();
+    }
+
+    public static JSONObject getJsonBody(HttpServletRequest req) throws IOException {
+        BufferedReader reader = req.getReader();
+        String line;
+        StringBuilder jsonBody = new StringBuilder();
+
+        while ((line = reader.readLine()) != null) {
+            jsonBody.append(line);
+        }
+
+        return new JSONObject(jsonBody.toString());
     }
 }
